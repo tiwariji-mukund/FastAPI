@@ -85,7 +85,6 @@ def InitializeConfig(logger_instance=None):
     Args:
         logger_instance: Optional logger instance. If not provided, uses module logger.
     """
-    global Env
     if logger_instance is None:
         logger_instance = logger
     
