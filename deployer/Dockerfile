@@ -5,12 +5,12 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-COPY deployer/requirements.txt .
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code (excluding deployer folder and unnecessary files)
+# Copy application code (build context should be root directory)
 COPY common/ ./common/
 COPY server/ ./server/
 COPY services/ ./services/
