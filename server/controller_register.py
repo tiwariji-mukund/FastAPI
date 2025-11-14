@@ -41,8 +41,6 @@ def log_all_routes(app: FastAPI):
     for route_str in sorted(routes):
         logger.Info(f"Registered route: {route_str}")
 
-
-
 register_router(controller.router, "controller")
 register_router(common.router, "common")
 
