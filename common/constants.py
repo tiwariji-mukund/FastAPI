@@ -5,4 +5,5 @@ SENSITIVE_HEADERS = ['authorization', 'cookie', 'x-api-key', 'api-key']
 CONTENT_LENGTH_HEADER = "content-length"
 CONTENT_TYPE_HEADER = "content-type"
 APPLICATION_JSON = "application/json"
-
+EXCLUDED_LOG_PATHS = ["/docs", "/openapi.json", "/redoc"]
+API_KEY_HEADER = "api-key"
