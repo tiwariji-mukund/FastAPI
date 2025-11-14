@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from server.logger import setup_logger
 from common.env import Config
+from common import components
 
 router = APIRouter()
 logger = setup_logger(__name__)
@@ -24,3 +25,22 @@ def get_config():
         "msg": "logged config values"
     }
 
+@router.get("/health")
+def check_health():
+    """
+    Health check endpoint that lists all registered components.
+    
+    Returns information about:
+    - Components that have been initialized (created on first access)
+    - Component factories available for lazy initialization (not yet created)
+    
+    Similar to Spring Boot's actuator health endpoint.
+    
+    Returns:
+        dict: Component metadata with host and status for each component
+    """
+    from common.components import get_component_metadata
+    from server.middleware.middleware import get_current_request_id
+    component_metadata = get_component_metadata()
+    response = component_metadata.copy()
+    return response

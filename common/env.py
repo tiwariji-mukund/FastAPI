@@ -15,6 +15,11 @@ class Env:
         self.SERVER_PORT: int = 8080
         self.APP_NAME: str = "app"
         self.ENV: str = "dev1"
+        self.DB_HOST: str = "localhost"
+        self.DB_PORT: int = 3306
+        self.DB_USER: str = "root"
+        self.DB_PASSWORD: str = ""
+        self.DB_NAME: str = "testdb"
     
     def update_from_dict(self, data: Dict[str, Any]):
         """Update config fields from a dictionary (from JSON unmarshaling)."""

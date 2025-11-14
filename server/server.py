@@ -8,12 +8,41 @@ from common.env import Config
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Lifespan event handler for FastAPI application startup and shutdown."""
+    """
+    Lifespan event handler for FastAPI application startup and shutdown.
+    
+    Similar to Spring Boot's ApplicationRunner, this handles:
+    - Factory registration function registration at startup (lazy initialization)
+    - Component cleanup at shutdown
+    """
     logger = setup_logger(__name__)
-    actual_port = int(os.environ.get("PORT", os.environ.get("UVICORN_PORT", Config.SERVER_PORT)))
-    logger.Infow("Server running on port", "port", actual_port, "configured_port", Config.SERVER_PORT)
+    
+    # Startup: Register factory registration functions (factories and components created on first access)
+    from common.component_config import register_all_factory_registration_functions
+    from common.components import cleanup_all_components
+    
+    try:
+        logger.Info("Starting application...")
+        
+        # Register factory registration functions (factories and components will be created on first access)
+        register_all_factory_registration_functions()
+        
+        actual_port = int(os.environ.get("PORT", os.environ.get("UVICORN_PORT", Config.SERVER_PORT)))
+        logger.Infow("Server running on port", "port", actual_port, "configured_port", Config.SERVER_PORT)
+        
+    except Exception as e:
+        logger.Errorw("Failed to start application", "error", str(e))
+        raise
+    
     yield
-    logger.Infow("Server shutting down")
+    
+    # Shutdown: Cleanup all components
+    try:
+        logger.Info("Shutting down application...")
+        cleanup_all_components()
+        logger.Infow("Server shutting down")
+    except Exception as e:
+        logger.Errorw("Error during shutdown", "error", str(e))
 
 def start_server(app: FastAPI, config, reload: bool = False):
     """

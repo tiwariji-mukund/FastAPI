@@ -3,6 +3,7 @@ from typing import List, Tuple
 from server.logger import setup_logger
 from services import controller
 from services.common import common
+from services.users import router
 
 logger = setup_logger(__name__)
 
@@ -43,4 +44,4 @@ def log_all_routes(app: FastAPI):
 
 register_router(controller.router, "controller")
 register_router(common.router, "common")
-
+register_router(router.router, "users")
