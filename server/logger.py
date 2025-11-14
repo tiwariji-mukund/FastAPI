@@ -47,7 +47,14 @@ class JSONFormatter(logging.Formatter):
         }
         
         if hasattr(record, 'extra_fields'):
-            log_entry.update(record.extra_fields)
+            serializable_fields = {}
+            for key, value in record.extra_fields.items():
+                try:
+                    json.dumps(value)
+                    serializable_fields[key] = value
+                except (TypeError, ValueError):
+                    serializable_fields[key] = str(value)
+            log_entry.update(serializable_fields)
         
         if getattr(record, 'include_request_id', False):
             request_id = get_request_id()

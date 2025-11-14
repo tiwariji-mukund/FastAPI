@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from server.middleware import apply_middleware
+from server.middleware.middleware import apply_middleware
 from common.env import InitializeConfig, Config
 from server.logger import setup_logger
 from server import server

@@ -2,22 +2,23 @@
 """Run script that reads port from config and starts uvicorn server."""
 import sys
 import uvicorn
-from common.env import InitializeConfig, Config
-from server.logger import setup_logger
+from common.env import Config
 
 def run():
     """Run the FastAPI application using uvicorn with config from config.json.
     
     Port and host are automatically read from config.json.
+    Config is initialized when main.py is imported.
     
     Usage:
         python run.py
         python run.py --log-level warning
         python run.py --log-level info --reload
     """
-    logger = setup_logger(__name__)
-    InitializeConfig(logger)
+    # Import main to trigger config initialization
+    from main import app
     
+    # Config is already initialized in main.py, so we can access it directly
     host = Config.SERVER_HOST
     port = Config.SERVER_PORT
     
