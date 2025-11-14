@@ -6,8 +6,6 @@ name: Python application
 on:
   push:
     branches: [ "master" ]
-  merge_request_target:
-    branches: [ "master" ]
 
 permissions:
   contents: read
