@@ -8,7 +8,7 @@ from server.controller_register import register_all_routers
 def main():
     logger = setup_logger(__name__)
     InitializeConfig(logger)
-    app = FastAPI()
+    app = FastAPI(lifespan=server.lifespan)
     register_all_routers(app)
     apply_middleware(app)
     return app
