@@ -289,7 +289,6 @@ def clear_registry():
         from common.components import clear_registry
         clear_registry()
     """
-    global _component_registry, _component_factories, _factory_registration_functions, _cleanup_callbacks, _component_metadata
     _component_registry.clear()
     _component_factories.clear()
     _factory_registration_functions.clear()
