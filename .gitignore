@@ -2,3 +2,4 @@ a.txt
 config.json
 __pycache__/
 .idea/
+.dockerignore
