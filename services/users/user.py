@@ -1,5 +1,6 @@
 import re
 from fastapi import Request, HTTPException, status
+from sqlmodel import select
 from server.logger import setup_logger
 from server.middleware.middleware import get_body
 from services.users.sql import User, encode_password
@@ -47,7 +48,6 @@ def create_user(request: Request):
         try:
             with get_db_session() as session:
                 # Check if user with email already exists
-                from sqlmodel import select
                 statement = select(User).where(User.email == email)
                 existing_user = session.exec(statement).first()
                 if existing_user:
@@ -97,4 +97,34 @@ def create_user(request: Request):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create user: {error_msg}"
+        )
+
+def get_all_users(request: Request):
+    """Get all users from the database.
+    
+    Note: The users table must be created manually via DDL before starting the application.
+    This function assumes the table already exists.
+    """
+    # Ensure database connection is initialized (lazy initialization)
+    # This will trigger database connection creation if not already connected
+    get_component("database")
+    
+    logger.Info("Getting all users")
+    try:
+        with get_db_session() as session:
+            users = session.exec(select(User)).all()
+            # Convert SQLModel objects to dictionaries for JSON serialization
+            users_list = [user.model_dump() for user in users]
+            return {"users": users_list}
+    except Exception as e:
+        # Format error message to single line (remove newlines, tabs, extra spaces)
+        error_msg = str(e)
+        # Replace newlines and tabs with spaces, then collapse multiple spaces
+        error_msg = re.sub(r'[\n\r\t]+', ' ', error_msg)
+        error_msg = re.sub(r'\s+', ' ', error_msg).strip()
+        
+        logger.Errorw("Failed to get all users", "error", error_msg)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get all users: {error_msg}"
         )
